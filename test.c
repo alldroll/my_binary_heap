@@ -88,8 +88,10 @@ int main() {
         }
 
 
+        SequenceT val;
         for (i = 0; i < 1000; ++i) {
-            heap_extract_max(heap);
+            val = heap_extract_max(heap);
+            assert(val == 999 - i);
         }
 
         destroy_heap(heap);
@@ -109,6 +111,17 @@ int main() {
             tmp = heap_extract_max(heap);
             assert(1000 == tmp);
         }
+
+        destroy_heap(heap);
+    }
+
+    {
+        SequenceT arr[10] = {16, 14, 10, 8, 7, 9, 3, 2, 4, 1};
+        HeapT* heap = create_heap_from((SequenceT*) &arr, 10);
+        heap_increase_key(heap, 8, 15);
+
+        SequenceT expected[10] = {16, 15, 10, 14, 7, 9, 3, 2, 8, 1};
+        HEAP_ASSERT_DATA_EQUALS(expected, heap);
 
         destroy_heap(heap);
     }

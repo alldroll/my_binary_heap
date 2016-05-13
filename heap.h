@@ -7,7 +7,7 @@ typedef int SequenceT;
 typedef void* HeapT;
 
 extern HeapT* create_heap();
-extern HeapT* create_heap_from(SequenceT* arr, size_t size);
+extern HeapT* create_heap_from(const SequenceT* arr, size_t size);
 extern void destroy_heap(HeapT* heap);
 extern int get_heap_size(HeapT* heap);
 extern SequenceT* get_heap_data(HeapT* heap);

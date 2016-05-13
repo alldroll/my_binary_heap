@@ -1,6 +1,5 @@
 #include <stdlib.h>
 #include <string.h>
-#include <stdio.h>
 #include <assert.h>
 #include "heap.h"
 
@@ -52,7 +51,7 @@ static int allocate_policy(HeapImplT* heap) {
     return 1;
 }
 
-HeapT* create_heap_from(SequenceT* arr, size_t size) {
+HeapT* create_heap_from(const SequenceT* arr, size_t size) {
     if (arr == NULL) {
         return NULL;
     }
@@ -246,12 +245,13 @@ void heap_increase_key(HeapT* h, size_t index, SequenceT key) {
     assert(heap != NULL && heap->size > index);
     assert(key > heap->data[index]);
 
-    heap->data[index] = key;
-    size_t parent_index = PARENT(index);
-    while (index > 0 && heap->data[parent_index] < heap->data[index]) {
-        swap(&heap->data[index], &heap->data[parent_index]);
-        index = parent_index;
+    /* 6_5_6 */
+    while (index > 0 && heap->data[PARENT(index)] < key) {
+        heap->data[index] = heap->data[PARENT(index)];
+        index = PARENT(index);
     }
+
+    heap->data[index] = key;
 }
 
 void max_heap_insert(HeapT* h, SequenceT key) {
