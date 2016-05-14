@@ -204,21 +204,29 @@ void build_min_heap(HeapT* h) {
     }
 }
 
-void heapsort(SequenceT* arr, size_t size) {
+void heapsort(SequenceT* arr, size_t size, SortOrderT order) {
     if (arr == NULL || size <= 1) {
         return;
     }
 
     HeapT* h = create_heap_from(arr, size);
-    HeapImplT* heap = (HeapImplT*) h;
     assert(h != NULL);
+    HeapImplT* heap = (HeapImplT*) h;
+    void (*heapify)(HeapT*, size_t);
 
-    build_max_heap(h);
+    if (order == DESC) {
+        build_max_heap(h);
+        heapify = max_heapify;
+    } else {
+        build_min_heap(h);
+        heapify = min_heapify;
+    }
+
     size_t index = size - 1;
     for (; index > 0; --index) {
         swap(&heap->data[index], &heap->data[0]);
         --heap->size;
-        max_heapify(h, 0);
+        heapify(h, 0);
     }
 
     memcpy(arr, heap->data, size * sizeof(SequenceT));

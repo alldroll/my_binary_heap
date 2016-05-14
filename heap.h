@@ -6,6 +6,11 @@
 typedef int SequenceT;
 typedef void* HeapT;
 
+typedef enum {
+    DESC = 0,
+    ASC = 1
+} SortOrderT;
+
 /**
  * create empty heap
  */
@@ -52,7 +57,7 @@ extern void build_min_heap(HeapT* heap);
 /**
  * sort array with given size in desc order
  */
-extern void heapsort(SequenceT* arr, size_t size);
+extern void heapsort(SequenceT* arr, size_t size, SortOrderT order);
 
 /**
  * get maximum key of max-heap

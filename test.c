@@ -61,14 +61,20 @@ int main() {
         destroy_heap(heap);
     }
 
+    /* test heapsort */
     {
         SequenceT arr[9] = {5, 13, 2, 25, 7, 17, 20, 8, 4};
         SequenceT expected[9] = {2, 4, 5, 7, 8, 13, 17, 20, 25};
 
-        heapsort(arr, 9);
+        heapsort(arr, 9, DESC);
         size_t i = 0;
         for (; i < 9; ++i) {
             assert(expected[i] == arr[i]);
+        }
+
+        heapsort(arr, 9, ASC);
+        for (i = 0; i < 9; ++i) {
+            assert(expected[i] == arr[8 - i]);
         }
     }
 
