@@ -23,6 +23,9 @@ inline static void swap(SequenceT* a, SequenceT* b) {
     *b = c;
 }
 
+/*
+ * TODO think about func name?:)
+ */
 static int allocate_policy(HeapImplT* heap) {
     assert(heap != NULL);
 
@@ -177,7 +180,7 @@ void min_heapify(HeapT* h, size_t index) {
 
     if (lowest_index != index) {
         swap(&heap->data[lowest_index], &heap->data[index]);
-        max_heapify(h, lowest_index);
+        min_heapify(h, lowest_index);
     }
 }
 

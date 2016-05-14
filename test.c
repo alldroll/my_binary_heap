@@ -51,6 +51,17 @@ int main() {
     }
 
     {
+        SequenceT arr[10] = {4, 1, 3, 2, 16, 9, 10, 14, 8, 7};
+        SequenceT expected[10] = {1, 2, 3, 4, 7, 9, 10, 14, 8, 16};
+        HeapT* heap = create_heap_from((SequenceT*) &arr, 10);
+        build_min_heap(heap);
+
+        HEAP_ASSERT_DATA_EQUALS(expected, heap);
+
+        destroy_heap(heap);
+    }
+
+    {
         SequenceT arr[9] = {5, 13, 2, 25, 7, 17, 20, 8, 4};
         SequenceT expected[9] = {2, 4, 5, 7, 8, 13, 17, 20, 25};
 
@@ -109,7 +120,7 @@ int main() {
         SequenceT tmp;
         for (i = 0; i < 1000; ++i) {
             tmp = heap_extract_max(heap);
-            assert(1000 == tmp);
+            assert(1000 == tmp && "all element should be equal 1000");
         }
 
         destroy_heap(heap);
