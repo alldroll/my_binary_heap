@@ -11,6 +11,7 @@ typedef enum {
     ASC = 1
 } SortOrderT;
 
+
 /**
  * create empty heap
  */
@@ -53,6 +54,11 @@ extern void build_max_heap(HeapT* heap);
  * build heap with min-heap property
  */
 extern void build_min_heap(HeapT* heap);
+
+/**
+ * build heap with min-heap property (another impl)
+ */
+extern void build_max_heap2(HeapT* heap);
 
 /**
  * sort array with given size in desc order

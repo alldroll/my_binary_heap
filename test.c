@@ -13,6 +13,11 @@
     }                                            \
 }
 
+/*
+ * TODO use min/max heap property checker instead of
+ * HEAP_ASSERT_DATA_EQUALS
+ */
+
 int main() {
     /* 6_2_1, 6_2_5 */
     {
@@ -138,6 +143,18 @@ int main() {
         heap_increase_key(heap, 8, 15);
 
         SequenceT expected[10] = {16, 15, 10, 14, 7, 9, 3, 2, 8, 1};
+        HEAP_ASSERT_DATA_EQUALS(expected, heap);
+
+        destroy_heap(heap);
+    }
+
+    /* build max heap another impl */
+    {
+        SequenceT arr[10] = {4, 1, 3, 2, 16, 9, 10, 14, 8, 7};
+        SequenceT expected[10] = {16, 14, 10, 8, 7, 3, 9, 1, 4, 2};
+        HeapT* heap = create_heap_from((SequenceT*) &arr, 10);
+        build_max_heap2(heap);
+
         HEAP_ASSERT_DATA_EQUALS(expected, heap);
 
         destroy_heap(heap);

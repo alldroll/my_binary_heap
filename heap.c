@@ -3,10 +3,18 @@
 #include <assert.h>
 #include "heap.h"
 
+/*
+ * TODO use instead of SequenceT* data
+ */
+typedef struct {
+    SequenceT data;
+    int id;
+} NodeT;
+
 typedef struct {
     size_t size;
     size_t capacity;
-    SequenceT* data;
+    SequenceT* data; /* NodeT* nodes */
 } HeapImplT;
 
 #define GROWTH_FACTOR 2
@@ -21,37 +29,6 @@ inline static void swap(SequenceT* a, SequenceT* b) {
     SequenceT c = *a;
     *a = *b;
     *b = c;
-}
-
-/*
- * TODO think about func name?:)
- */
-static int allocate_policy(HeapImplT* heap) {
-    assert(heap != NULL);
-
-    if (heap->capacity == 0) {
-        heap->data = (SequenceT*) malloc(sizeof(SequenceT) * INITIAL_CAPACITY);
-        heap->capacity = INITIAL_CAPACITY;
-    }
-
-    if (heap->data == NULL) {
-        return 0;
-    }
-
-    if (heap->size == heap->capacity) {
-        heap->capacity *= GROWTH_FACTOR;
-        heap->data = realloc(heap->data, sizeof(SequenceT) * heap->capacity);
-    }
-
-    /* is it right? */
-    if (heap->capacity > INITIAL_CAPACITY &&
-        heap->capacity >= (heap->size * GROWTH_FACTOR * GROWTH_FACTOR)
-    ) {
-        heap->capacity /= GROWTH_FACTOR;
-        heap->data = realloc(heap->data, sizeof(SequenceT) * heap->capacity);
-    }
-
-    return 1;
 }
 
 HeapT* create_heap_from(const SequenceT* arr, size_t size) {
@@ -82,10 +59,10 @@ HeapT* create_heap() {
         return NULL;
     }
 
-    heap->data = NULL;
     heap->size = 0;
-    heap->capacity = 0;
-    if (!allocate_policy(heap)) {
+    heap->data = (SequenceT*) malloc(sizeof(SequenceT) * INITIAL_CAPACITY);
+    heap->capacity = INITIAL_CAPACITY;
+    if (heap->data == NULL) {
         free(heap);
         return NULL;
     }
@@ -204,6 +181,18 @@ void build_min_heap(HeapT* h) {
     }
 }
 
+void build_max_heap2(HeapT* h) {
+    assert(h != NULL);
+
+    HeapImplT* heap = (HeapImplT*) h;
+    size_t size = heap->size, index = 0;
+    heap->size = 0;
+
+    for (; index < size; ++index) {
+        max_heap_insert(h, heap->data[index]);
+    }
+}
+
 void heapsort(SequenceT* arr, size_t size, SortOrderT order) {
     if (arr == NULL || size <= 1) {
         return;
@@ -246,7 +235,14 @@ SequenceT heap_extract_max(HeapT* h) {
     SequenceT max = heap_maximum(h);
     heap->data[0] = heap->data[heap->size - 1];
     --heap->size;
-    allocate_policy(heap);
+
+    if (heap->capacity > INITIAL_CAPACITY &&
+        heap->capacity >= (heap->size * GROWTH_FACTOR * GROWTH_FACTOR)
+    ) {
+        heap->capacity /= GROWTH_FACTOR;
+        heap->data = realloc(heap->data, sizeof(SequenceT) * heap->capacity);
+    }
+
     max_heapify(h, 0);
     return max;
 }
@@ -269,7 +265,12 @@ void max_heap_insert(HeapT* h, SequenceT key) {
     assert(h != NULL);
 
     HeapImplT* heap = (HeapImplT*) h;
-    allocate_policy(heap);
+
+    if (heap->size == heap->capacity) {
+        heap->capacity *= GROWTH_FACTOR;
+        heap->data = realloc(heap->data, sizeof(SequenceT) * heap->capacity);
+    }
+
     ++heap->size;
     heap->data[heap->size - 1] = INVALID_NODE;
     heap_increase_key(h, heap->size - 1, key);
